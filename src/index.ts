@@ -378,10 +378,19 @@ class PJEServer {
       password: args.password || process.env.PJE_PASSWORD,
     };
     
-    const certificateConfig: CertificateConfig = {
-      certificateThumbprint: '7db4b6cc9de4785944bcf1c8f3cde03355733b84',
-      certificatePassword: '123456'
-    };
+    const thumbprint = args.certificateThumbprint || process.env.PJE_CERTIFICATE_THUMBPRINT;
+    const certPassword = args.certificatePassword || process.env.PJE_CERTIFICATE_PASSWORD;
+    const certPfxPath = args.certificatePfxPath || process.env.PJE_CERTIFICATE_PFX_PATH;
+
+    let certificateConfig: CertificateConfig | undefined;
+    if (thumbprint || certPfxPath) {
+      certificateConfig = {
+        certificateThumbprint: thumbprint || "",
+        certificatePassword: certPassword || "",
+        pfxPath: certPfxPath,
+      };
+      config.certificate = certificateConfig;
+    }
 
     this.pjeClient = new PJEClient(config);
 
